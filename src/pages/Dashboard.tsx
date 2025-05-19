@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TaskList } from "@/components/TaskList";
@@ -5,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 
 // Mock task data
 const MOCK_TASKS = [
@@ -83,6 +85,12 @@ export default function Dashboard() {
 
   const handleDeleteTask = (id: string) => {
     setTasks(tasks.filter(task => task.id !== id));
+    
+    // Show success toast after deletion
+    toast({
+      title: "Task deleted",
+      description: "The task has been deleted successfully."
+    });
   };
 
   const handleAddTask = () => {

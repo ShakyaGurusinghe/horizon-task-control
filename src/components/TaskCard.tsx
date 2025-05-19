@@ -10,6 +10,17 @@ import {
   Trash as TrashIcon 
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface Task {
   id: string;
@@ -40,6 +51,10 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
     "todo": "To Do",
     "in-progress": "In Progress",
     "completed": "Completed"
+  };
+
+  const handleDelete = () => {
+    onDelete(task.id);
   };
 
   return (
@@ -77,12 +92,28 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
           >
             <EditIcon className="h-4 w-4" />
           </button>
-          <button 
-            onClick={() => onDelete(task.id)} 
-            className="text-gray-500 hover:text-red-500 transition-colors"
-          >
-            <TrashIcon className="h-4 w-4" />
-          </button>
+          
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button className="text-gray-500 hover:text-red-500 transition-colors">
+                <TrashIcon className="h-4 w-4" />
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Do you want to delete this task? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </CardFooter>
     </Card>
