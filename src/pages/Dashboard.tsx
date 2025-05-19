@@ -1,11 +1,10 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TaskList } from "@/components/TaskList";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Mock task data
 const MOCK_TASKS = [
@@ -68,6 +67,7 @@ const MOCK_TASKS = [
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [tasks, setTasks] = useState(MOCK_TASKS);
   
   const taskStatistics = {
@@ -78,12 +78,25 @@ export default function Dashboard() {
   };
 
   const handleEditTask = (id: string) => {
-    navigate(`/edit-task/${id}`);
+    navigate(`/edit-task/${id}`, { state: { tasks } });
   };
 
   const handleDeleteTask = (id: string) => {
     setTasks(tasks.filter(task => task.id !== id));
   };
+
+  const handleAddTask = () => {
+    navigate("/new-task", { state: { tasks } });
+  };
+
+  // Check if we have state from navigation
+  useEffect(() => {
+    if (location.state && location.state.updatedTasks) {
+      setTasks(location.state.updatedTasks);
+      // Clear the state to avoid reapplying it on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   return (
     <div className="px-4 py-6 md:px-6 lg:px-8 space-y-6">
@@ -94,7 +107,7 @@ export default function Dashboard() {
             Manage your team's tasks and track progress.
           </p>
         </div>
-        <Button onClick={() => navigate("/new-task")}>
+        <Button onClick={handleAddTask}>
           <Plus className="mr-1 h-4 w-4" />
           New Task
         </Button>
@@ -149,3 +162,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+import { useEffect } from "react";

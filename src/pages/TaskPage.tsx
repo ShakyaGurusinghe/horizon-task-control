@@ -1,76 +1,36 @@
 
 import { useState, useEffect } from "react";
 import { TaskForm } from "@/components/TaskForm";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import { v4 as uuidv4 } from "uuid";
 
-// Mock task data
-const MOCK_TASKS = [
-  {
-    id: "1",
-    title: "Redesign homepage",
-    description: "Update the homepage with new brand guidelines and improve user experience.",
-    deadline: new Date(2025, 5, 25),
-    assignedTo: {
-      name: "John Doe",
-      avatar: ""
-    },
-    status: "in-progress" as const
-  },
-  {
-    id: "2",
-    title: "Fix navigation bug",
-    description: "Navigation menu doesn't work correctly on mobile devices.",
-    deadline: new Date(2025, 5, 20),
-    assignedTo: {
-      name: "Jane Smith",
-      avatar: ""
-    },
-    status: "todo" as const
-  },
-  {
-    id: "3",
-    title: "Update API documentation",
-    description: "Document new endpoints and update existing examples.",
-    deadline: new Date(2025, 5, 18),
-    assignedTo: {
-      name: "Alex Johnson",
-      avatar: ""
-    },
-    status: "completed" as const
-  },
-  {
-    id: "4",
-    title: "Setup testing environment",
-    description: "Configure Jest and Cypress for automated testing.",
-    deadline: new Date(2025, 5, 30),
-    assignedTo: {
-      name: "Sarah Williams",
-      avatar: ""
-    },
-    status: "todo" as const
-  },
-  {
-    id: "5",
-    title: "Create onboarding flow",
-    description: "Design and implement onboarding experience for new users.",
-    deadline: new Date(2025, 6, 5),
-    assignedTo: {
-      name: "Michael Brown",
-      avatar: ""
-    },
-    status: "todo" as const
-  }
-];
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  deadline: Date;
+  assignedTo: {
+    name: string;
+    avatar?: string;
+  };
+  status: "todo" | "in-progress" | "completed";
+}
 
 export default function TaskPage() {
   const { taskId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const isEditMode = taskId !== undefined;
   
+  // Get tasks from location state or use empty array
+  const [tasks, setTasks] = useState<Task[]>(
+    location.state?.tasks || []
+  );
+  
   const [task, setTask] = useState(
-    isEditMode 
-      ? MOCK_TASKS.find(t => t.id === taskId)
+    isEditMode && tasks.length 
+      ? tasks.find(t => t.id === taskId)
       : undefined
   );
 
@@ -87,17 +47,29 @@ export default function TaskPage() {
   }, [isEditMode, task, navigate]);
 
   const handleSubmit = (data: any) => {
-    console.log("Task data:", data);
+    let updatedTasks: Task[];
     
-    // Here we would typically make an API call to save the task
-    // For now, we'll just show a success toast
+    if (isEditMode && task) {
+      // Update existing task
+      updatedTasks = tasks.map(t => 
+        t.id === taskId ? { ...data, id: taskId } : t
+      );
+    } else {
+      // Create new task with unique ID
+      const newTask = { ...data, id: uuidv4() };
+      updatedTasks = [...tasks, newTask];
+    }
     
+    // Show success toast
     toast({
       title: isEditMode ? "Task updated" : "Task created",
       description: `${data.title} has been ${isEditMode ? "updated" : "created"} successfully.`
     });
     
-    navigate("/");
+    // Navigate back with updated tasks
+    navigate("/", { 
+      state: { updatedTasks } 
+    });
   };
 
   const handleCancel = () => {
