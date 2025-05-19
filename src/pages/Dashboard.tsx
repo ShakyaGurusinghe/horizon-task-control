@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TaskList } from "@/components/TaskList";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useEffect } from "react-router-dom";
 
 // Mock task data
 const MOCK_TASKS = [
@@ -162,5 +162,3 @@ export default function Dashboard() {
     </div>
   );
 }
-
-import { useEffect } from "react";
