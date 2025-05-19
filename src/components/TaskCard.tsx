@@ -16,7 +16,10 @@ interface Task {
   title: string;
   description: string;
   deadline: Date;
-  assignedTo: string;
+  assignedTo: {
+    name: string;
+    avatar?: string;
+  };
   status: "todo" | "in-progress" | "completed";
 }
 
@@ -37,12 +40,6 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
     "todo": "To Do",
     "in-progress": "In Progress",
     "completed": "Completed"
-  };
-
-  // Mock person data
-  const assignedPerson = {
-    name: "Team Member",
-    avatar: ""
   };
 
   return (
@@ -66,12 +63,12 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
       <CardFooter className="p-4 pt-2 border-t flex justify-between">
         <div className="flex items-center">
           <Avatar className="h-6 w-6 mr-2">
-            <AvatarImage src={assignedPerson.avatar} alt={assignedPerson.name} />
+            <AvatarImage src={task.assignedTo.avatar} alt={task.assignedTo.name} />
             <AvatarFallback>
-              {assignedPerson.name.charAt(0).toUpperCase()}
+              {task.assignedTo.name.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <span className="text-xs text-gray-600">{assignedPerson.name}</span>
+          <span className="text-xs text-gray-600">{task.assignedTo.name}</span>
         </div>
         <div className="flex space-x-2">
           <button 
