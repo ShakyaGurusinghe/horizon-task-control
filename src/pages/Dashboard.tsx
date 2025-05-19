@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TaskList } from "@/components/TaskList";
 import { Badge } from "@/components/ui/badge";
@@ -59,7 +59,7 @@ const MOCK_TASKS = [
     description: "Design and implement onboarding experience for new users.",
     deadline: new Date(2025, 6, 5),
     assignedTo: {
-      name: "John Doe",
+      name: "Michael Brown",
       avatar: ""
     },
     status: "todo" as const

@@ -18,7 +18,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Mock team members data
@@ -30,36 +30,48 @@ const teamMembers = [
   { id: "5", name: "Michael Brown", avatar: "" }
 ];
 
+interface TaskFormData {
+  id?: string;
+  title: string;
+  description: string;
+  deadline: Date;
+  assignedTo: {
+    name: string;
+    avatar?: string;
+  };
+  status: "todo" | "in-progress" | "completed";
+}
+
 export function TaskForm({ 
   initialData,
   onSubmit,
   onCancel
 }: {
-  initialData?: {
-    id?: string;
-    title: string;
-    description: string;
-    deadline: Date;
-    assignedTo: string;
-    status: "todo" | "in-progress" | "completed";
-  };
-  onSubmit: (data: any) => void;
+  initialData?: TaskFormData;
+  onSubmit: (data: TaskFormData) => void;
   onCancel: () => void;
 }) {
   const [title, setTitle] = useState(initialData?.title || "");
   const [description, setDescription] = useState(initialData?.description || "");
   const [deadline, setDeadline] = useState<Date | undefined>(initialData?.deadline || undefined);
-  const [assignedTo, setAssignedTo] = useState(initialData?.assignedTo || "");
+  const [assignedToId, setAssignedToId] = useState(initialData?.assignedTo ? "1" : "");
   const [status, setStatus] = useState<"todo" | "in-progress" | "completed">(initialData?.status || "todo");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Find the selected team member
+    const selectedMember = teamMembers.find(m => m.id === assignedToId) || teamMembers[0];
+    
     onSubmit({
       id: initialData?.id,
       title,
       description,
-      deadline,
-      assignedTo,
+      deadline: deadline || new Date(),
+      assignedTo: {
+        name: selectedMember.name,
+        avatar: selectedMember.avatar
+      },
       status
     });
   };
@@ -108,7 +120,7 @@ export function TaskForm({
               <Calendar
                 mode="single"
                 selected={deadline}
-                onSelect={setDeadline}
+                onSelect={(date) => date && setDeadline(date)}
                 disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
                 initialFocus
               />
@@ -119,8 +131,8 @@ export function TaskForm({
         <div className="space-y-2">
           <Label htmlFor="assignedTo">Assigned To</Label>
           <Select
-            value={assignedTo}
-            onValueChange={setAssignedTo}
+            value={assignedToId}
+            onValueChange={setAssignedToId}
             required
           >
             <SelectTrigger className="w-full">

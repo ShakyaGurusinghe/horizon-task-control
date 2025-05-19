@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { TaskForm } from "@/components/TaskForm";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,7 +11,10 @@ const MOCK_TASKS = [
     title: "Redesign homepage",
     description: "Update the homepage with new brand guidelines and improve user experience.",
     deadline: new Date(2025, 5, 25),
-    assignedTo: "1",
+    assignedTo: {
+      name: "John Doe",
+      avatar: ""
+    },
     status: "in-progress" as const
   },
   {
@@ -18,7 +22,10 @@ const MOCK_TASKS = [
     title: "Fix navigation bug",
     description: "Navigation menu doesn't work correctly on mobile devices.",
     deadline: new Date(2025, 5, 20),
-    assignedTo: "2",
+    assignedTo: {
+      name: "Jane Smith",
+      avatar: ""
+    },
     status: "todo" as const
   },
   {
@@ -26,7 +33,10 @@ const MOCK_TASKS = [
     title: "Update API documentation",
     description: "Document new endpoints and update existing examples.",
     deadline: new Date(2025, 5, 18),
-    assignedTo: "3",
+    assignedTo: {
+      name: "Alex Johnson",
+      avatar: ""
+    },
     status: "completed" as const
   },
   {
@@ -34,7 +44,10 @@ const MOCK_TASKS = [
     title: "Setup testing environment",
     description: "Configure Jest and Cypress for automated testing.",
     deadline: new Date(2025, 5, 30),
-    assignedTo: "4",
+    assignedTo: {
+      name: "Sarah Williams",
+      avatar: ""
+    },
     status: "todo" as const
   },
   {
@@ -42,7 +55,10 @@ const MOCK_TASKS = [
     title: "Create onboarding flow",
     description: "Design and implement onboarding experience for new users.",
     deadline: new Date(2025, 6, 5),
-    assignedTo: "5",
+    assignedTo: {
+      name: "Michael Brown",
+      avatar: ""
+    },
     status: "todo" as const
   }
 ];
